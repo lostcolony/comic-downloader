@@ -1,0 +1,17 @@
+{
+  "name": "comic-downloader",
+  "version": "1.0.0",
+  "description": "Generalizable downloader for web hosted comics",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "C. P.",
+  "license": "MIT",
+  "dependencies": {
+    "async-map": "^0.2.0",
+    "dateformat": "^3.0.3",
+    "follow-redirects": "^1.4.1",
+    "minimist": "^1.2.0"
+  }
+}
