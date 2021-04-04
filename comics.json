@@ -1,0 +1,9 @@
+[
+  {
+    "name": "Frazz",
+    "start": "https://www.gocomics.com/frazz/2001/04/02",
+    "imageXpath": "//picture[@class= 'item-comic-image']/img/@src",
+    "nextXpath": "//div[@class='gc-calendar-nav__next']/a[@class='fa btn btn-outline-secondary btn-circle fa-caret-right sm ']/@href",
+    "titleXpath": "//meta[@property='article:published_time']/@content"
+  }
+]
