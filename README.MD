@@ -2,7 +2,7 @@
 This is a simple utility intended to download free (i.e., no authentication) comics from online sources.  
 
 ### Usage
-1. After downloading, change out comics.json. 
+1. After downloading, change out comics.json. It's a list of JSON objects containing the following attributes -
 - 'name' is the name of the comic (user friendly name)
 - 'start' is the comic to begin on (URL to the first comic)
 - 'imageXpath' is the xpath to the string URL for the comic image
