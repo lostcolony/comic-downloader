@@ -14,4 +14,4 @@ This is a simple utility intended to download free (i.e., no authentication) com
 ### Notes
 This leverages an xpath parser to parse webpages. This is slow, but intentional; I found it a little more natural to write xpath syntax to select what I wanted than regexes, and the CPU to parse the page automatically induces latency so I didn't have to implement a timer to prevent DOS protections from kicking in.
 
-Also, as comics are downloaded, the state is stored back into comics.json, so the start field will be automatically updated. This also means don't run the script and make edits to comics.json; they will be overwritten. It also means you're free to interrupt the script at any time without issue.
+Also, as comics are downloaded, the state is stored back into comics.json, so the start field will be automatically updated. This also means don't run the script and make edits to comics.json; they will be overwritten. It also means you're free to interrupt the script at any time, to resume later, without issue.
