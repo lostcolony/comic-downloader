@@ -8,14 +8,14 @@ Config goes in ./comic_configs; one file per sequential execution. Format is som
 
 ```
   "comics" => %{
-    "frazz" => %{
+    "WHATEVER_COMIC_NAME" => %{
       "count" => 1,
       "delay" => 1000,
       "extension" => ".gif",
-      "img_css" => "picture.item-comic-image img",
+      "img_css" => "CSS SELECTOR TO IMG TAG FOR COMIC",
       "name_func" => &ComicDownloader.Default.url_to_name/1,
-      "next_css" => "a.fa.btn.btn-outline-secondary.btn-circle.fa-caret-right.sm",
-      "url" => "https://www.gocomics.com/frazz/2001/04/02"
+      "next_css" => "CSS SELECTOR FOR ANCHOR TAG FOR NEXT URL",
+      "url" => "URL_TO_FIRST_COMIC"
     }
   },
   "func" => &ComicDownloader.Default.save_page/1
