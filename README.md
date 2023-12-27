@@ -1,13 +1,14 @@
 # ComicDownloader
 
-This is a simple utility intended to download free (i.e., no authentication) comics from online sources.
+This is a simple utility intended to download free (i.e., no authentication) comics from online sources. Should just be a `mix install`, then add your configs, `iex -S mix`, then `ComicDownloader.run`
+
+## Config
 
 Config goes in ./comic_configs; one file per sequential execution. Format is something like (not all keys are necessary)
 
 ```
   "comics" => %{
     "frazz" => %{
-      "comic_name" => "frazz",
       "count" => 1,
       "delay" => 1000,
       "extension" => ".gif",
