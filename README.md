@@ -2,6 +2,8 @@
 
 This is a simple utility intended to download free (i.e., no authentication) comics from online sources. With Elixir installed, it should just be a `mix install`, then add your configs, `iex -S mix`, then `ComicDownloader.run`
 
+The Webtoons downloader requires Imagemagick installed and configured to allow for enough resources to stitch vertical images together.
+
 ## Config
 
 Config goes in ./comic_configs; one file per sequential execution. Format is something like (not all keys are necessary)
