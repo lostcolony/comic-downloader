@@ -1,6 +1,6 @@
 # ComicDownloader
 
-This is a simple utility intended to download free (i.e., no authentication) comics from online sources. Should just be a `mix install`, then add your configs, `iex -S mix`, then `ComicDownloader.run`
+This is a simple utility intended to download free (i.e., no authentication) comics from online sources. With Elixir installed, it should just be a `mix install`, then add your configs, `iex -S mix`, then `ComicDownloader.run`
 
 ## Config
 
