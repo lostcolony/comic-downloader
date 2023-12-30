@@ -3,6 +3,10 @@ defmodule ComicDownloader do
   Documentation for `ComicDownloader`.
   """
 
+  def test() do
+    start("./comic_configs/lfg.exs")
+  end
+
   def run() do
     File.ls!("./comic_configs")
     |> Enum.map(fn x -> "./comic_configs/" <> x end)
@@ -16,7 +20,8 @@ defmodule ComicDownloader do
     %{"func" => func, "comics" => comics} = terms = elem(Code.eval_file(file), 0)
 
     Map.keys(comics)
-    |> Enum.map(fn key ->
+    |> Enum.reduce(terms, fn key, terms ->
+      comics = Map.get(terms, "comics")
       vals = Map.get(comics, key)
       rebuilt_map = Map.put(vals, "comic_name", key)
       loop(file, func, rebuilt_map, terms)
@@ -28,7 +33,7 @@ defmodule ComicDownloader do
 
     case new_map == rebuilt_map do
       true ->
-        :ok
+        terms
 
       false ->
         new_terms = put_in(terms, ["comics", Map.get(rebuilt_map, "comic_name")], new_map)
@@ -38,42 +43,12 @@ defmodule ComicDownloader do
     end
   end
 
-  # def loop(file, _func, [], finished) do
-  #   File.write!(file, :erlang.term_to_binary(finished))
-  # end
-
-  # def loop(file, func, , finished) do
-  #   download_comic(file, func, h, finished)
-  # end
-
-  # def test() do
-  #   loop(
-  #     &ComicDownloader.Webtoons.save_page/3,
-  #     "https://www.webtoons.com/en/comedy/mage-and-demon-queen/s3-episode-51/viewer?title_no=1438&episode_no=179",
-  #     "mage-and-demon-queen",
-  #     179
-  #   )
-  # end
-
-  # def loop(func, url, comic_name) do
-  #   loop(func, url, comic_name, 1)
-  # end
-
-  # def loop(func, url, comic_name, count) do
-  #   {next_url, count} = func.(url, comic_name, count)
-
-  #   case next_url do
-  #     [] -> :ok
-  #     _ -> loop(func, next_url, comic_name, count)
-  #   end
-  # end
-
   def get_url(url) do
     get_url(url, [])
   end
 
   def get_url(url, headers) do
-    get_url(url, headers, [{:timeout, 10000}, {:recv_timeout, 10000}])
+    get_url(url, headers, [{:timeout, 10000}, {:recv_timeout, 10000}, follow_redirect: true])
   end
 
   def get_url(
@@ -81,6 +56,10 @@ defmodule ComicDownloader do
         headers,
         request_options
       ) do
+    get_url(url, headers, request_options, 3, 3)
+  end
+
+  def get_url(url, headers, request_options, retries, max_retries) do
     headers =
       headers ++
         [
@@ -88,7 +67,17 @@ defmodule ComicDownloader do
            "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:104.0) Gecko/20100101 Firefox/104.0"}
         ]
 
-    HTTPoison.get!(url, headers, request_options).body
+    case {HTTPoison.get(url, headers, request_options), retries} do
+      {{:ok, resp}, _} ->
+        resp.body
+
+      {{:error, error}, 0} ->
+        raise(error)
+
+      {{:error, _}, _} ->
+        :timer.sleep((max_retries - retries) * 2000)
+        get_url(url, headers, request_options, retries - 1, max_retries)
+    end
   end
 
   def write_image(file, comic_name, count, extension) when is_integer(count) do
