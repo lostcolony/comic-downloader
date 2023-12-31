@@ -30,12 +30,11 @@ defmodule ComicDownloader.Default do
     end
 
     image_name = get_image_name(data)
-
     new_count = case {img_url, Map.get(data, "fail_on_no_img", true)} do
       {[], false} -> count #Depending on the site they may have a post w/o a comic. Not erroring here -does- imply that we need to make sure any usage of this downloader works before walking away.
       {"", false} -> count #Depending on the site they may have a post w/o a comic. Not erroring here -does- imply that we need to make sure any usage of this downloader works before walking away.
       _ ->
-        img_url = construct_url(to_string(img_url), to_string(url))
+        img_url = construct_url(to_string(img_url), to_string(url), data)
         ComicDownloader.get_url(img_url, Map.get(data, "headers", []))
         |> ComicDownloader.write_image(comic_name, image_name, Map.get(data, "extension", ".jpg"))
 
@@ -48,23 +47,21 @@ defmodule ComicDownloader.Default do
     |> Floki.find(next_css)
     |> Floki.attribute("href")
 
-    {construct_url(to_string(next), url), new_count}
+    {construct_url(to_string(next), url, data), new_count}
   end
 
 
-  def construct_url("#", _) do
+  def construct_url("#", _, _) do
     []
   end
-  def construct_url("", _) do
+  def construct_url("", _, _) do
     []
   end
-  def construct_url(_, []) do
+  def construct_url(_, [], _) do
     []
   end
-  @spec construct_url(binary() | URI.t(), binary() | URI.t()) :: binary()
-  def construct_url(path_part, url) do
 
-    path_part = Regex.replace(~r/^\./, path_part, "")
+  def construct_url(path_part, url, data) do
     path_part = case String.match?(path_part, ~r/(^\/|^http)/) do
       true -> path_part
       _ -> "/" <> path_part
@@ -73,9 +70,19 @@ defmodule ComicDownloader.Default do
     second = URI.parse(path_part)
     case Map.get(second, :host) do
       nil ->
-        Map.put(second, :host, Map.get(first, :host))
-        |> Map.put(:scheme, Map.get(first, :scheme))
-        |> URI.to_string()
+        case {Map.get(second, :path), Map.get(data, "path_is_absolute", true)} do
+          {"/" <> _, true} ->
+            Map.put(first, :path, path_part)
+            |> URI.to_string()
+          _ ->
+            new_path = Map.get(first, :path)
+            |> Path.dirname()
+            |> Path.join(path_part)
+            |> Path.expand
+
+            Map.put(first, :path, new_path)
+            |> URI.to_string()
+        end
       _ ->
         path_part
     end

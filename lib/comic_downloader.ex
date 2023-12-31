@@ -4,7 +4,16 @@ defmodule ComicDownloader do
   """
 
   def test() do
-    start("./comic_configs/lfg.exs")
+    start("./comic_configs/unsounded.exs")
+  end
+
+  def test_all() do
+    File.ls!("./comic_configs")
+    |> Enum.map(fn x -> "./comic_configs/" <> x end)
+    |> Enum.map(fn x ->
+      IO.inspect(x)
+      start(x)
+    end)
   end
 
   def run() do
